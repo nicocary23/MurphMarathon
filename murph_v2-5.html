@@ -1,0 +1,2341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MURPH MARATHON — 22 August 2026 | Level Sixteen</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>
+/* ═══════════════════════════════════════════
+   BRAND TOKENS — Level Sixteen
+   ═══════════════════════════════════════════ */
+:root {
+  --midnight-form:  #1F2A44;
+  --active-ember:   #E67A45;
+  --cool-surge:     #3E7B80;
+  --glacie-frost:   #A3C7C4;
+  --glacie-warm:    #E28F6F;
+  --shadow-light:   #F4F3EA;
+  --shadow-core:    #101820;
+  --white:          #ffffff;
+  --font-display:   'Oswald', sans-serif;
+  --font-body:      'Inter', sans-serif;
+}
+
+/* ═══════════════════════════════════════════
+   RESET & BASE
+   ═══════════════════════════════════════════ */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; font-size: 16px; }
+body {
+  font-family: var(--font-body);
+  background: var(--shadow-core);
+  color: var(--shadow-light);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+img { max-width: 100%; display: block; }
+a { text-decoration: none; color: inherit; }
+button { border: none; cursor: pointer; font-family: var(--font-body); }
+
+/* ═══════════════════════════════════════════
+   UTILITY
+   ═══════════════════════════════════════════ */
+.container { max-width: 1280px; margin: 0 auto; padding: 0 24px; }
+.section { padding: 100px 0; }
+.section-label {
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--active-ember);
+  margin-bottom: 12px;
+}
+.section-title {
+  font-family: var(--font-display);
+  font-size: clamp(2.2rem, 5vw, 4rem);
+  font-weight: 700;
+  text-transform: uppercase;
+  line-height: 1.05;
+  margin-bottom: 24px;
+}
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--active-ember);
+  color: var(--shadow-light);
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 16px 40px;
+  border-radius: 4px;
+  transition: all .3s ease;
+}
+.btn-primary:hover { background: #d4692e; transform: translateY(-2px); box-shadow: 0 8px 30px rgba(230,122,69,.35); }
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: transparent;
+  color: var(--shadow-light);
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 14px 38px;
+  border-radius: 4px;
+  border: 2px solid var(--shadow-light);
+  transition: all .3s ease;
+}
+.btn-secondary:hover { background: var(--shadow-light); color: var(--shadow-core); }
+
+/* ═══════════════════════════════════════════
+   NAVIGATION
+   ═══════════════════════════════════════════ */
+nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+  padding: 18px 0;
+  transition: all .4s ease;
+}
+nav.scrolled {
+  background: rgba(16,24,32,.95);
+  backdrop-filter: blur(20px);
+  padding: 12px 0;
+  box-shadow: 0 4px 30px rgba(0,0,0,.3);
+}
+nav .container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.nav-logo {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--shadow-light);
+}
+.nav-logo span { color: var(--active-ember); }
+.nav-links {
+  display: flex;
+  gap: 32px;
+  list-style: none;
+  align-items: center;
+}
+.nav-links a {
+  font-family: var(--font-display);
+  font-size: 0.8rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--shadow-light);
+  opacity: .75;
+  transition: opacity .3s;
+}
+.nav-links a:hover { opacity: 1; }
+.nav-links .nav-cta {
+  background: var(--active-ember);
+  padding: 10px 24px;
+  border-radius: 4px;
+  opacity: 1;
+}
+.nav-links .nav-cta:hover { background: #d4692e; }
+.nav-hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  cursor: pointer;
+  z-index: 1001;
+}
+.nav-hamburger span {
+  width: 28px;
+  height: 2px;
+  background: var(--shadow-light);
+  transition: all .3s;
+}
+
+/* Mobile Nav */
+@media (max-width: 768px) {
+  .nav-links { display: none; }
+  .nav-hamburger { display: flex; }
+  .nav-links.open {
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background: var(--shadow-core);
+    justify-content: center;
+    align-items: center;
+    gap: 28px;
+  }
+  .nav-links.open a { font-size: 1.2rem; opacity: 1; }
+}
+
+/* ═══════════════════════════════════════════
+   HERO
+   ═══════════════════════════════════════════ */
+.hero {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  overflow: hidden;
+  background: var(--shadow-core);
+}
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, var(--shadow-core) 0%, var(--midnight-form) 50%, #0d1117 100%);
+  z-index: 0;
+}
+.hero-bg::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 50% at 50% 0%, rgba(230,122,69,.12) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 80% 80%, rgba(62,123,128,.08) 0%, transparent 50%);
+}
+/* Animated grid */
+.hero-grid {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  opacity: .06;
+  background-image:
+    linear-gradient(rgba(244,243,234,.3) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(244,243,234,.3) 1px, transparent 1px);
+  background-size: 60px 60px;
+  animation: gridMove 20s linear infinite;
+}
+@keyframes gridMove {
+  0% { transform: translate(0, 0); }
+  100% { transform: translate(60px, 60px); }
+}
+.hero-content {
+  position: relative;
+  z-index: 2;
+  padding: 0 24px;
+}
+.hero-date {
+  font-family: var(--font-display);
+  font-size: 0.9rem;
+  letter-spacing: 6px;
+  text-transform: uppercase;
+  color: var(--active-ember);
+  margin-bottom: 24px;
+}
+.hero-title {
+  font-family: var(--font-display);
+  font-size: clamp(3.5rem, 12vw, 10rem);
+  font-weight: 700;
+  text-transform: uppercase;
+  line-height: 0.9;
+  color: var(--shadow-light);
+  margin-bottom: 8px;
+}
+.hero-title .accent { color: var(--active-ember); }
+.hero-subtitle {
+  font-family: var(--font-display);
+  font-size: clamp(1.2rem, 3vw, 2rem);
+  font-weight: 400;
+  letter-spacing: 6px;
+  text-transform: uppercase;
+  color: var(--glacie-frost);
+  margin-bottom: 40px;
+}
+.hero-stats {
+  display: flex;
+  gap: 48px;
+  justify-content: center;
+  margin-bottom: 48px;
+  flex-wrap: wrap;
+}
+.hero-stat {
+  text-align: center;
+}
+.hero-stat-value {
+  font-family: var(--font-display);
+  font-size: 2.4rem;
+  font-weight: 700;
+  color: var(--active-ember);
+}
+.hero-stat-label {
+  font-size: 0.75rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  opacity: .6;
+  margin-top: 4px;
+}
+.hero-btns {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.hero-whatsapp {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 20px;
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: rgba(244,243,234,.6);
+  letter-spacing: 0.5px;
+  text-decoration: none;
+  padding: 8px 20px;
+  border: 1px solid rgba(37,211,102,.25);
+  border-radius: 40px;
+  background: rgba(37,211,102,.08);
+  transition: all .3s ease;
+}
+.hero-whatsapp:hover {
+  color: #25D366;
+  border-color: #25D366;
+  background: rgba(37,211,102,.15);
+  transform: translateY(-1px);
+}
+.hero-wa-icon {
+  font-size: 1rem;
+}
+.hero-scroll {
+  position: absolute;
+  bottom: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  opacity: .5;
+  animation: bounce 2s infinite;
+}
+.hero-scroll span {
+  font-size: 0.65rem;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+}
+.hero-scroll-line {
+  width: 1px;
+  height: 40px;
+  background: linear-gradient(to bottom, var(--shadow-light), transparent);
+}
+@keyframes bounce {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50% { transform: translateX(-50%) translateY(10px); }
+}
+
+/* X watermark */
+.hero-x {
+  position: absolute;
+  right: -5%;
+  top: 50%;
+  transform: translateY(-50%);
+  font-family: var(--font-display);
+  font-size: 40vw;
+  font-weight: 900;
+  color: rgba(230,122,69,.04);
+  z-index: 1;
+  line-height: 1;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* ═══════════════════════════════════════════
+   INFO STRIP
+   ═══════════════════════════════════════════ */
+.info-strip {
+  background: var(--midnight-form);
+  border-top: 3px solid var(--active-ember);
+  padding: 28px 0;
+}
+.info-strip .container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+.info-item {
+  text-align: center;
+  flex: 1;
+  min-width: 140px;
+}
+.info-item-label {
+  font-size: 0.65rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  opacity: .5;
+  margin-bottom: 4px;
+}
+.info-item-value {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+/* ═══════════════════════════════════════════
+   CHOOSE YOUR CHALLENGE
+   ═══════════════════════════════════════════ */
+.challenges { background: var(--shadow-core); }
+.challenges-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+  margin-top: 48px;
+}
+.challenge-card {
+  position: relative;
+  background: linear-gradient(145deg, rgba(31,42,68,.6), rgba(16,24,32,.9));
+  border: 1px solid rgba(244,243,234,.08);
+  border-radius: 12px;
+  padding: 36px 28px;
+  transition: all .4s ease;
+  overflow: hidden;
+}
+.challenge-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--active-ember);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform .4s ease;
+}
+.challenge-card:hover::before { transform: scaleX(1); }
+.challenge-card:hover {
+  border-color: rgba(230,122,69,.25);
+  transform: translateY(-4px);
+  box-shadow: 0 20px 60px rgba(0,0,0,.4);
+}
+.challenge-card.featured {
+  border-color: var(--active-ember);
+  background: linear-gradient(145deg, rgba(230,122,69,.12), rgba(16,24,32,.95));
+}
+.challenge-card.featured::before { transform: scaleX(1); background: var(--active-ember); }
+.challenge-distance {
+  font-family: var(--font-display);
+  font-size: 3rem;
+  font-weight: 700;
+  color: var(--active-ember);
+  line-height: 1;
+}
+.challenge-distance small {
+  font-size: 1rem;
+  color: var(--glacie-frost);
+  opacity: .7;
+}
+.challenge-name {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin: 16px 0 8px;
+}
+.challenge-desc {
+  font-size: 0.9rem;
+  line-height: 1.6;
+  opacity: .6;
+  margin-bottom: 24px;
+}
+.challenge-includes {
+  list-style: none;
+  margin-bottom: 28px;
+}
+.challenge-includes li {
+  font-size: 0.8rem;
+  padding: 6px 0;
+  border-bottom: 1px solid rgba(244,243,234,.06);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  opacity: .7;
+}
+.challenge-includes li::before {
+  content: '✦';
+  color: var(--active-ember);
+  font-size: 0.6rem;
+}
+.challenge-price {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+.challenge-price span { font-size: 0.8rem; opacity: .5; font-weight: 400; }
+.challenge-btn {
+  display: block;
+  width: 100%;
+  text-align: center;
+  background: rgba(230,122,69,.15);
+  color: var(--active-ember);
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 14px;
+  border-radius: 6px;
+  border: 1px solid rgba(230,122,69,.3);
+  transition: all .3s;
+}
+.challenge-btn:hover {
+  background: var(--active-ember);
+  color: var(--shadow-light);
+}
+.challenge-card.featured .challenge-btn {
+  background: var(--active-ember);
+  color: var(--shadow-light);
+  border-color: var(--active-ember);
+}
+.challenge-card.featured .challenge-btn:hover {
+  background: #d4692e;
+}
+
+/* ═══════════════════════════════════════════
+   INTERACTIVE MAP
+   ═══════════════════════════════════════════ */
+.map-wrapper {
+  margin-top: 48px;
+  margin-bottom: 60px;
+  position: relative;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid rgba(230,122,69,.2);
+  box-shadow: 0 20px 60px rgba(0,0,0,.5);
+}
+#routeMap {
+  width: 100%;
+  height: 520px;
+  background: var(--shadow-core);
+  z-index: 1;
+}
+@media (max-width: 768px) {
+  #routeMap { height: 400px; }
+}
+/* Dark map tiles override */
+.leaflet-tile-pane { filter: saturate(0.3) brightness(0.45) contrast(1.2); }
+.leaflet-control-zoom a {
+  background: var(--midnight-form) !important;
+  color: var(--shadow-light) !important;
+  border-color: rgba(244,243,234,.1) !important;
+}
+.leaflet-control-zoom a:hover {
+  background: var(--active-ember) !important;
+}
+.leaflet-control-attribution {
+  background: rgba(16,24,32,.85) !important;
+  color: rgba(244,243,234,.3) !important;
+  font-size: 9px !important;
+}
+.leaflet-control-attribution a { color: rgba(244,243,234,.4) !important; }
+/* Custom popups */
+.leaflet-popup-content-wrapper {
+  background: var(--shadow-core) !important;
+  color: var(--shadow-light) !important;
+  border-radius: 10px !important;
+  border: 1px solid rgba(230,122,69,.3) !important;
+  box-shadow: 0 10px 40px rgba(0,0,0,.6) !important;
+  font-family: var(--font-body) !important;
+}
+.leaflet-popup-tip { background: var(--shadow-core) !important; }
+.leaflet-popup-content { margin: 14px 18px !important; }
+.map-popup-title {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--active-ember);
+  margin-bottom: 4px;
+}
+.map-popup-sub {
+  font-size: 0.8rem;
+  opacity: .6;
+  line-height: 1.5;
+}
+.map-popup-tag {
+  display: inline-block;
+  margin-top: 8px;
+  background: rgba(230,122,69,.15);
+  color: var(--active-ember);
+  font-size: 0.65rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-weight: 600;
+}
+/* Map legend */
+.map-legend {
+  display: flex;
+  gap: 24px;
+  justify-content: center;
+  padding: 20px 24px;
+  background: rgba(16,24,32,.9);
+  border-top: 1px solid rgba(244,243,234,.06);
+  flex-wrap: wrap;
+}
+.map-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.75rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  font-family: var(--font-display);
+  opacity: .7;
+}
+.map-legend-line {
+  width: 24px;
+  height: 4px;
+  border-radius: 2px;
+}
+.map-legend-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+/* Segment selector tabs */
+.map-segments-tabs {
+  display: flex;
+  gap: 8px;
+  padding: 16px 24px;
+  background: rgba(31,42,68,.5);
+  border-bottom: 1px solid rgba(244,243,234,.06);
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.map-seg-tab {
+  padding: 8px 18px;
+  background: rgba(244,243,234,.05);
+  border: 1px solid rgba(244,243,234,.08);
+  border-radius: 8px;
+  font-family: var(--font-display);
+  font-size: 0.7rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--shadow-light);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all .3s;
+}
+.map-seg-tab:hover, .map-seg-tab.active {
+  background: var(--active-ember);
+  border-color: var(--active-ember);
+}
+.map-seg-tab .tab-km {
+  display: inline-block;
+  margin-left: 6px;
+  opacity: .6;
+  font-weight: 400;
+}
+
+/* ═══════════════════════════════════════════
+   ROUTE
+   ═══════════════════════════════════════════ */
+.route {
+  background: var(--midnight-form);
+  position: relative;
+  overflow: visible;
+}
+.route::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(ellipse 60% 50% at 70% 50%, rgba(62,123,128,.1) 0%, transparent 70%);
+  pointer-events: none;
+}
+.route-visual {
+  margin-top: 60px;
+  position: relative;
+}
+.route-segments {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  position: relative;
+}
+.route-segment {
+  display: grid;
+  grid-template-columns: 120px 3px 1fr;
+  gap: 32px;
+  align-items: start;
+  padding: 32px 0;
+  position: relative;
+}
+.route-segment:not(:last-child) {
+  border-bottom: 1px solid rgba(244,243,234,.05);
+}
+.route-km {
+  text-align: right;
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--active-ember);
+  line-height: 1;
+}
+.route-km small {
+  display: block;
+  font-size: 0.7rem;
+  color: var(--glacie-frost);
+  opacity: .6;
+  margin-top: 4px;
+}
+.route-line {
+  position: relative;
+  background: rgba(230,122,69,.2);
+  border-radius: 2px;
+  height: 100%;
+  min-height: 80px;
+}
+.route-dot {
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 14px;
+  height: 14px;
+  background: var(--active-ember);
+  border-radius: 50%;
+  border: 3px solid var(--shadow-core);
+  box-shadow: 0 0 0 2px var(--active-ember);
+}
+.route-info h3 {
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-bottom: 6px;
+}
+.route-info p {
+  font-size: 0.9rem;
+  opacity: .5;
+  line-height: 1.6;
+}
+.route-info .route-tag {
+  display: inline-block;
+  margin-top: 10px;
+  background: rgba(62,123,128,.2);
+  color: var(--glacie-frost);
+  font-size: 0.7rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 5px 14px;
+  border-radius: 20px;
+  border: 1px solid rgba(62,123,128,.3);
+}
+/* Murph segment highlight */
+.route-segment.murph {
+  background: rgba(230,122,69,.05);
+  border-radius: 12px;
+  padding: 32px 20px;
+  margin: 8px -20px;
+}
+.route-segment.murph .route-km { color: var(--glacie-warm); }
+
+@media (max-width: 600px) {
+  .route-segment { grid-template-columns: 60px 3px 1fr; gap: 16px; }
+  .route-km { font-size: 1.4rem; }
+}
+
+/* ═══════════════════════════════════════════
+   EXPERIENCE SECTION
+   ═══════════════════════════════════════════ */
+.experience { background: var(--shadow-core); }
+.experience-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  margin-top: 48px;
+}
+@media (max-width: 900px) {
+  .experience-grid { grid-template-columns: 1fr; }
+}
+.exp-card {
+  position: relative;
+  border-radius: 16px;
+  overflow: hidden;
+  aspect-ratio: 3/4;
+  display: flex;
+  align-items: flex-end;
+  cursor: pointer;
+  transition: transform .4s ease;
+}
+.exp-card:hover { transform: scale(1.02); }
+.exp-card-bg {
+  position: absolute;
+  inset: 0;
+  transition: transform .6s ease;
+}
+.exp-card:hover .exp-card-bg { transform: scale(1.08); }
+.exp-card-bg.run {
+  background: linear-gradient(135deg, var(--midnight-form), #0a0f18);
+  /* Placeholder gradient for run imagery */
+}
+.exp-card-bg.run::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 600'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%23E67A45' stop-opacity='0.15'/%3E%3Cstop offset='1' stop-color='%231F2A44' stop-opacity='0.9'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect fill='url(%23g)' width='400' height='600'/%3E%3Ctext x='200' y='250' font-family='sans-serif' font-size='120' fill='%23E67A45' fill-opacity='0.08' text-anchor='middle'%3E84%3C/text%3E%3Ctext x='200' y='320' font-family='sans-serif' font-size='40' fill='%23E67A45' fill-opacity='0.06' text-anchor='middle'%3EKM%3C/text%3E%3C/svg%3E") center/cover;
+}
+.exp-card-bg.murph {
+  background: linear-gradient(135deg, #1a0f08, var(--shadow-core));
+}
+.exp-card-bg.murph::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 600'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='0.5' y2='1'%3E%3Cstop offset='0' stop-color='%23E67A45' stop-opacity='0.2'/%3E%3Cstop offset='1' stop-color='%23101820' stop-opacity='0.95'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect fill='url(%23g)' width='400' height='600'/%3E%3Ctext x='200' y='200' font-family='sans-serif' font-size='50' fill='%23E67A45' fill-opacity='0.06' text-anchor='middle'%3E1 MILE%3C/text%3E%3Ctext x='200' y='270' font-family='sans-serif' font-size='50' fill='%23E67A45' fill-opacity='0.06' text-anchor='middle'%3E100 PULLS%3C/text%3E%3Ctext x='200' y='340' font-family='sans-serif' font-size='50' fill='%23E67A45' fill-opacity='0.06' text-anchor='middle'%3E200 PUSH%3C/text%3E%3Ctext x='200' y='410' font-family='sans-serif' font-size='50' fill='%23E67A45' fill-opacity='0.06' text-anchor='middle'%3E300 SQUAT%3C/text%3E%3C/svg%3E") center/cover;
+}
+.exp-card-bg.rooftop {
+  background: linear-gradient(135deg, #1c1008, var(--midnight-form));
+}
+.exp-card-bg.rooftop::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 50% 30% at 50% 20%, rgba(230,122,69,.2) 0%, transparent 100%),
+    linear-gradient(to top, rgba(16,24,32,.95), transparent);
+}
+.exp-card-content {
+  position: relative;
+  z-index: 2;
+  padding: 32px;
+  background: linear-gradient(to top, rgba(16,24,32,.95) 0%, rgba(16,24,32,.5) 60%, transparent 100%);
+  width: 100%;
+}
+.exp-card-num {
+  font-family: var(--font-display);
+  font-size: 0.7rem;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--active-ember);
+  margin-bottom: 8px;
+}
+.exp-card-title {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  line-height: 1.1;
+  margin-bottom: 12px;
+}
+.exp-card-desc {
+  font-size: 0.85rem;
+  line-height: 1.6;
+  opacity: .6;
+}
+
+/* ═══════════════════════════════════════════
+   SCHEDULE / TIMELINE
+   ═══════════════════════════════════════════ */
+.schedule {
+  background: linear-gradient(180deg, var(--shadow-core) 0%, var(--midnight-form) 100%);
+}
+.timeline {
+  margin-top: 48px;
+  position: relative;
+  padding-left: 40px;
+}
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 12px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: linear-gradient(to bottom, var(--active-ember), var(--cool-surge), var(--active-ember));
+}
+.timeline-item {
+  position: relative;
+  margin-bottom: 40px;
+  padding-left: 24px;
+}
+.timeline-item::before {
+  content: '';
+  position: absolute;
+  left: -34px;
+  top: 6px;
+  width: 12px;
+  height: 12px;
+  background: var(--active-ember);
+  border-radius: 50%;
+  border: 3px solid var(--shadow-core);
+  box-shadow: 0 0 0 2px var(--active-ember);
+}
+.timeline-time {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--active-ember);
+}
+.timeline-title {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin: 4px 0;
+}
+.timeline-desc {
+  font-size: 0.85rem;
+  opacity: .5;
+  line-height: 1.5;
+}
+
+/* ═══════════════════════════════════════════
+   VENUE — LEVEL 16
+   ═══════════════════════════════════════════ */
+.venue {
+  position: relative;
+  background: var(--midnight-form);
+  overflow: hidden;
+}
+.venue-bg-x {
+  position: absolute;
+  right: -10%;
+  top: -20%;
+  font-family: var(--font-display);
+  font-size: 50vw;
+  font-weight: 900;
+  color: rgba(230,122,69,.03);
+  pointer-events: none;
+  user-select: none;
+  line-height: 1;
+}
+.venue-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  align-items: center;
+  position: relative;
+  z-index: 2;
+}
+@media (max-width: 900px) {
+  .venue-content { grid-template-columns: 1fr; }
+}
+.venue-visual {
+  position: relative;
+  aspect-ratio: 4/3;
+  border-radius: 16px;
+  overflow: hidden;
+  background: linear-gradient(135deg, var(--shadow-core), var(--midnight-form));
+  border: 1px solid rgba(230,122,69,.15);
+}
+.venue-visual-inner {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 70% 50% at 50% 40%, rgba(230,122,69,.15) 0%, transparent 70%),
+    linear-gradient(135deg, rgba(31,42,68,.8), rgba(16,24,32,.95));
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.venue-visual-text {
+  font-family: var(--font-display);
+  font-size: clamp(3rem, 8vw, 5rem);
+  font-weight: 900;
+  text-transform: uppercase;
+  color: var(--shadow-light);
+  line-height: 0.95;
+  text-align: center;
+}
+.venue-visual-sub {
+  font-family: var(--font-display);
+  font-size: 0.8rem;
+  letter-spacing: 6px;
+  text-transform: uppercase;
+  color: var(--active-ember);
+  margin-top: 12px;
+}
+.venue-text p {
+  font-size: 1rem;
+  line-height: 1.8;
+  opacity: .65;
+  margin-bottom: 20px;
+}
+.venue-features {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-top: 32px;
+}
+.venue-feature {
+  padding: 16px;
+  background: rgba(244,243,234,.04);
+  border-radius: 8px;
+  border: 1px solid rgba(244,243,234,.06);
+}
+.venue-feature strong {
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 4px;
+}
+.venue-feature span {
+  font-size: 0.8rem;
+  opacity: .5;
+}
+
+/* ═══════════════════════════════════════════
+   MERCH
+   ═══════════════════════════════════════════ */
+.merch {
+  background: var(--shadow-core);
+}
+.merch-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  margin-top: 48px;
+}
+@media (max-width: 900px) {
+  .merch-grid { grid-template-columns: repeat(2, 1fr); }
+}
+.merch-card {
+  border-radius: 12px;
+  overflow: hidden;
+  background: linear-gradient(145deg, rgba(31,42,68,.4), rgba(16,24,32,.8));
+  border: 1px solid rgba(244,243,234,.06);
+  transition: all .4s ease;
+  cursor: pointer;
+}
+.merch-card:hover {
+  transform: translateY(-6px);
+  border-color: rgba(230,122,69,.2);
+  box-shadow: 0 20px 50px rgba(0,0,0,.4);
+}
+.merch-img {
+  aspect-ratio: 1;
+  background: linear-gradient(135deg, rgba(31,42,68,.6), rgba(230,122,69,.08));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+.merch-img-icon {
+  font-family: var(--font-display);
+  font-size: 3rem;
+  color: var(--active-ember);
+  opacity: .3;
+  font-weight: 900;
+}
+.merch-img .merch-badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: var(--active-ember);
+  color: var(--shadow-light);
+  font-size: 0.6rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 4px;
+}
+.merch-info {
+  padding: 20px;
+}
+.merch-info h4 {
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 6px;
+}
+.merch-info p {
+  font-size: 0.8rem;
+  opacity: .5;
+  margin-bottom: 10px;
+}
+.merch-price {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--active-ember);
+}
+
+/* ═══════════════════════════════════════════
+   PARTNERS
+   ═══════════════════════════════════════════ */
+.partners {
+  background: var(--midnight-form);
+  text-align: center;
+}
+.partner-logos {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 60px;
+  flex-wrap: wrap;
+  margin-top: 48px;
+}
+.partner-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  background: rgba(244,243,234,.06);
+  border: 1px solid rgba(244,243,234,.1);
+  padding: 20px 32px;
+  min-width: 160px;
+  min-height: 80px;
+  opacity: .6;
+  transition: all .3s ease;
+}
+.partner-logo:hover { opacity: 1; transform: translateY(-2px); }
+.partner-logo img, .partner-logo svg {
+  max-height: 45px;
+  max-width: 140px;
+  width: auto;
+}
+
+/* ═══════════════════════════════════════════
+   FAQ
+   ═══════════════════════════════════════════ */
+.faq { background: var(--shadow-core); }
+.faq-list {
+  margin-top: 48px;
+  max-width: 800px;
+}
+.faq-item {
+  border-bottom: 1px solid rgba(244,243,234,.08);
+}
+.faq-question {
+  padding: 24px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  transition: color .3s;
+}
+.faq-question:hover { color: var(--active-ember); }
+.faq-question h3 {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+.faq-toggle {
+  font-size: 1.4rem;
+  color: var(--active-ember);
+  transition: transform .3s;
+  flex-shrink: 0;
+  margin-left: 16px;
+}
+.faq-item.open .faq-toggle { transform: rotate(45deg); }
+.faq-answer {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height .4s ease, padding .4s ease;
+}
+.faq-item.open .faq-answer {
+  max-height: 300px;
+  padding-bottom: 24px;
+}
+.faq-answer p {
+  font-size: 0.9rem;
+  line-height: 1.7;
+  opacity: .55;
+}
+
+/* ═══════════════════════════════════════════
+   FINAL CTA
+   ═══════════════════════════════════════════ */
+.final-cta {
+  background: linear-gradient(135deg, var(--active-ember), #c45a28);
+  text-align: center;
+  padding: 120px 0;
+  position: relative;
+  overflow: hidden;
+}
+.final-cta::before {
+  content: '✕';
+  position: absolute;
+  font-size: 40vw;
+  color: rgba(255,255,255,.04);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  font-family: var(--font-display);
+  font-weight: 900;
+}
+.final-cta .section-title { color: var(--shadow-light); }
+.final-cta .section-label { color: rgba(244,243,234,.7); }
+.final-cta p {
+  font-size: 1.1rem;
+  opacity: .8;
+  max-width: 500px;
+  margin: 0 auto 40px;
+  color: var(--shadow-light);
+}
+.final-cta .btn-primary {
+  background: var(--shadow-core);
+  color: var(--shadow-light);
+}
+.final-cta .btn-primary:hover {
+  background: var(--midnight-form);
+  box-shadow: 0 8px 30px rgba(0,0,0,.4);
+}
+
+/* ═══════════════════════════════════════════
+   FOOTER
+   ═══════════════════════════════════════════ */
+footer {
+  background: var(--shadow-core);
+  padding: 60px 0 32px;
+  border-top: 1px solid rgba(244,243,234,.06);
+}
+.footer-top {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 40px;
+  margin-bottom: 48px;
+}
+@media (max-width: 768px) {
+  .footer-top { grid-template-columns: 1fr 1fr; }
+}
+.footer-brand .nav-logo { margin-bottom: 16px; }
+.footer-brand p {
+  font-size: 0.85rem;
+  opacity: .4;
+  line-height: 1.6;
+  max-width: 300px;
+}
+.footer-col h4 {
+  font-family: var(--font-display);
+  font-size: 0.8rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--active-ember);
+  margin-bottom: 16px;
+}
+.footer-col a {
+  display: block;
+  font-size: 0.85rem;
+  opacity: .4;
+  padding: 4px 0;
+  transition: opacity .3s;
+}
+.footer-col a:hover { opacity: .8; color: var(--active-ember); }
+.footer-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 32px;
+  border-top: 1px solid rgba(244,243,234,.06);
+  flex-wrap: wrap;
+  gap: 16px;
+}
+.footer-bottom p {
+  font-size: 0.75rem;
+  opacity: .3;
+}
+.footer-socials {
+  display: flex;
+  gap: 16px;
+}
+.footer-socials a {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid rgba(244,243,234,.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  opacity: .4;
+  transition: all .3s;
+}
+.footer-socials a:hover {
+  opacity: 1;
+  border-color: var(--active-ember);
+  color: var(--active-ember);
+}
+
+/* ═══════════════════════════════════════════
+   ANIMATIONS — Scroll Reveal
+   ═══════════════════════════════════════════ */
+.reveal {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity .8s ease, transform .8s ease;
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+.reveal-delay-1 { transition-delay: .1s; }
+.reveal-delay-2 { transition-delay: .2s; }
+.reveal-delay-3 { transition-delay: .3s; }
+.reveal-delay-4 { transition-delay: .4s; }
+.reveal-delay-5 { transition-delay: .5s; }
+
+/* ═══════════════════════════════════════════
+   CUSTOM SCROLLBAR
+   ═══════════════════════════════════════════ */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: var(--shadow-core); }
+::-webkit-scrollbar-thumb { background: var(--midnight-form); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--active-ember); }
+
+
+/* ═══════════════════════════════════════════
+   CHARITY BANNER & DONATE
+   ═══════════════════════════════════════════ */
+.charity-banner {
+  background: linear-gradient(135deg, rgba(62,123,128,.15), rgba(230,122,69,.1));
+  border: 1px solid rgba(62,123,128,.3);
+  border-radius: 12px;
+  padding: 24px 32px;
+  margin-bottom: 32px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+.charity-banner-icon {
+  font-size: 2.5rem;
+  line-height: 1;
+}
+.charity-banner-text {
+  flex: 1;
+  min-width: 200px;
+}
+.charity-banner-text h3 {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--shadow-light);
+  margin-bottom: 4px;
+}
+.charity-banner-text p {
+  font-size: 0.85rem;
+  opacity: .6;
+  line-height: 1.5;
+}
+.rooftop-included-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(230,122,69,.12);
+  border: 1px solid rgba(230,122,69,.25);
+  border-radius: 20px;
+  padding: 6px 16px;
+  font-family: var(--font-display);
+  font-size: 0.7rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--active-ember);
+  font-weight: 600;
+  margin-top: 12px;
+}
+.challenge-card .rooftop-tag {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 12px;
+  padding: 8px 12px;
+  background: transparent;
+  border-radius: 6px;
+  font-size: 0.7rem;
+  color: var(--active-ember);
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  opacity: .7;
+}
+.challenge-card.donate-card {
+  border-color: rgba(62,123,128,.4);
+  background: linear-gradient(145deg, rgba(62,123,128,.12), rgba(16,24,32,.95));
+}
+.challenge-card.donate-card::before { background: var(--cool-surge); }
+.challenge-card.donate-card .challenge-distance { color: var(--cool-surge); }
+.challenge-card.donate-card .challenge-btn {
+  background: rgba(62,123,128,.15);
+  color: var(--glacie-frost);
+  border-color: rgba(62,123,128,.3);
+}
+.challenge-card.donate-card .challenge-btn:hover {
+  background: var(--cool-surge);
+  color: var(--shadow-light);
+}
+/* WhatsApp floating button */
+.whatsapp-banner {
+  background: linear-gradient(135deg, rgba(37,211,102,.1), rgba(37,211,102,.05));
+  border: 1px solid rgba(37,211,102,.25);
+  border-radius: 12px;
+  padding: 20px 28px;
+  margin-top: 32px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+.whatsapp-banner-text {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+  min-width: 200px;
+}
+.whatsapp-banner-text span {
+  font-size: 1.8rem;
+}
+.whatsapp-banner-text p {
+  font-family: var(--font-display);
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+.whatsapp-banner-text p small {
+  display: block;
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  font-weight: 400;
+  letter-spacing: 0;
+  text-transform: none;
+  opacity: .5;
+  margin-top: 2px;
+}
+.btn-whatsapp {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #25D366;
+  color: #fff;
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 12px 28px;
+  border-radius: 6px;
+  transition: all .3s ease;
+  white-space: nowrap;
+}
+.btn-whatsapp:hover {
+  background: #1EBE5A;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(37,211,102,.3);
+}
+/* Selection */
+::selection { background: var(--active-ember); color: var(--shadow-light); }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════ NAVIGATION ═══════════════ -->
+<nav id="navbar">
+  <div class="container">
+    <a href="#" class="nav-logo">Level <span>Six</span>teen</a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#challenges">Challenge</a></li>
+      <li><a href="#route">Route</a></li>
+      <li><a href="#schedule">Schedule</a></li>
+      <li><a href="#venue">Venue</a></li>
+      <li><a href="#merch">Merch</a></li>
+      <li><a href="#faq">FAQ</a></li>
+      <li><a href="#tickets" class="nav-cta">Get Tickets</a></li>
+    </ul>
+    <div class="nav-hamburger" id="hamburger" onclick="document.getElementById('navLinks').classList.toggle('open')">
+      <span></span><span></span><span></span>
+    </div>
+  </div>
+</nav>
+
+<!-- ═══════════════ HERO ═══════════════ -->
+<section class="hero" id="home">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-x">✕</div>
+  <div class="hero-content">
+    <p class="hero-date">22 August 2026 — London</p>
+    <h1 class="hero-title">
+      MURPH<br><span class="accent">MARATHON</span>
+    </h1>
+    <p class="hero-subtitle">See you at the top.</p>
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <div class="hero-stat-value">84km</div>
+        <div class="hero-stat-label">Max Distance</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-value">21km</div>
+        <div class="hero-stat-label">Min Distance</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-value">4</div>
+        <div class="hero-stat-label">Segments</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-value">1</div>
+        <div class="hero-stat-label">Murph</div>
+      </div>
+    </div>
+    <div class="hero-btns">
+      <a href="#challenges" class="btn-primary">Choose Your Challenge →</a>
+      <a href="#route" class="btn-secondary">View Route</a>
+    </div>
+    <a href="https://chat.whatsapp.com/LtdHDTwfs33G8bcVVOy3UJ" target="_blank" class="hero-whatsapp">
+      <span class="hero-wa-icon">💬</span> Join the WhatsApp Group
+    </a>
+  </div>
+  <div class="hero-scroll">
+    <span>Scroll</span>
+    <div class="hero-scroll-line"></div>
+  </div>
+</section>
+
+<!-- ═══════════════ INFO STRIP ═══════════════ -->
+<div class="info-strip">
+  <div class="container">
+    <div class="info-item">
+      <div class="info-item-label">Date</div>
+      <div class="info-item-value">22 Aug 2026</div>
+    </div>
+    <div class="info-item">
+      <div class="info-item-label">Start</div>
+      <div class="info-item-value">06:00</div>
+    </div>
+    <div class="info-item">
+      <div class="info-item-label">Start / Finish</div>
+      <div class="info-item-value">Yellow Park, Tobacco Dock</div>
+    </div>
+    <div class="info-item">
+      <div class="info-item-label">Turnaround</div>
+      <div class="info-item-value">Newwave CrossFit, Byfleet</div>
+    </div>
+    <div class="info-item">
+      <div class="info-item-label">Finish Party</div>
+      <div class="info-item-value">18:00 Rooftop</div>
+    </div>
+    <div class="info-item">
+      <div class="info-item-label">All Proceeds</div>
+      <div class="info-item-value" style="color:var(--active-ember);"><a href="https://www.transcendsarcoma.com/" target="_blank" style="color:var(--active-ember); text-decoration:underline;">Transcend Sarcoma</a></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ CHOOSE YOUR CHALLENGE ═══════════════ -->
+<section class="section challenges" id="challenges">
+  <div class="container">
+    <div class="reveal">
+      <p class="section-label">Your Race, Your Rules</p>
+      <h2 class="section-title">Choose Your<br>Challenge</h2>
+    </div>
+    <!-- CHARITY + ROOFTOP BANNER -->
+    <div class="charity-banner reveal">
+      <div class="charity-banner-icon">&#x2764;&#xFE0F;</div>
+      <div class="charity-banner-text">
+        <h3>100% of Proceeds Go to <a href="https://www.transcendsarcoma.com/" target="_blank" style="color:var(--active-ember); text-decoration:underline;">Transcend Sarcoma</a></h3>
+        <p>Every penny raised goes directly to <a href="https://www.transcendsarcoma.com/" target="_blank" style="color:var(--active-ember); text-decoration:underline;">Transcend Sarcoma</a> — a charity dedicated to raising awareness and funding research into sarcoma. You're not just running — you're making a difference. The rooftop finish party at Level 16 is included with every ticket below.</p>
+      </div>
+      <div class="rooftop-included-badge">&#127751; Rooftop Party Included With All Tickets</div>
+    </div>
+
+    <div class="challenges-grid" id="tickets">
+
+      <div class="challenge-card featured reveal reveal-delay-1">
+        <div class="challenge-distance">84<small>km + Murph</small></div>
+        <h3 class="challenge-name">Full Challenge</h3>
+        <p class="challenge-desc">The ultimate endurance test. Run all four half-marathon segments and complete the Murph workout at Newwave CrossFit Byfleet.</p>
+        <ul class="challenge-includes">
+          <li>4× Half Marathon segments (84km)</li>
+          <li>Murph workout: 100 pull-ups, 200 press-ups, 300 squats</li>
+          <li>Event tee & finisher medal</li>
+          <li>Hydration & nutrition support</li>
+          <li><strong>Free app access</strong> — nutrition & coaching until event day</li>
+        </ul>
+        <div class="challenge-price">£150 <span>/ entry</span></div>
+        <a href="#" class="challenge-btn">Book Now</a>
+        <div class="rooftop-tag">&#127751; Rooftop finish party included</div>
+      </div>
+
+      <div class="challenge-card reveal reveal-delay-2">
+        <div class="challenge-distance">42<small>km + Murph</small></div>
+        <h3 class="challenge-name">Marathon + Murph</h3>
+        <p class="challenge-desc">Marathon distance outbound to Byfleet plus the Murph. A serious test without the return run.</p>
+        <ul class="challenge-includes">
+          <li>2× Half Marathon segments (42km)</li>
+          <li>Murph workout: 100 pull-ups, 200 press-ups, 300 squats</li>
+          <li>Event tee</li>
+          <li><strong>Free app access</strong> — nutrition & coaching until event day</li>
+        </ul>
+        <div class="challenge-price">£100 <span>/ entry</span></div>
+        <a href="#" class="challenge-btn">Book Now</a>
+        <div class="rooftop-tag">&#127751; Rooftop finish party included</div>
+      </div>
+
+      <div class="challenge-card reveal reveal-delay-3">
+        <div class="challenge-distance">21<small>km</small></div>
+        <h3 class="challenge-name">Half Marathon</h3>
+        <p class="challenge-desc">Run a single half-marathon segment. Choose your leg — perfect for first-timers or joining friends at a checkpoint.</p>
+        <ul class="challenge-includes">
+          <li>1× Half Marathon segment (21km)</li>
+          <li>Choose your segment</li>
+          <li>Hydration support</li>
+          <li><strong>Free app access</strong> — nutrition & coaching until event day</li>
+        </ul>
+        <div class="challenge-price">£50 <span>/ entry</span></div>
+        <a href="#" class="challenge-btn">Book Now</a>
+        <div class="rooftop-tag">&#127751; Rooftop finish party included</div>
+      </div>
+
+      <div class="challenge-card reveal reveal-delay-4">
+        <div class="challenge-distance">&#10005;<small>Workout</small></div>
+        <h3 class="challenge-name">Murph Only</h3>
+        <p class="challenge-desc">Join the community at Newwave CrossFit Byfleet for the Murph workout. No running required.</p>
+        <ul class="challenge-includes">
+          <li>Murph workout: 100 pull-ups, 200 press-ups, 300 squats</li>
+          <li>Gym community experience</li>
+          <li><strong>Free app access</strong> — nutrition & coaching until event day</li>
+        </ul>
+        <div class="challenge-price">£45 <span>/ entry</span></div>
+        <a href="#" class="challenge-btn">Book Now</a>
+        <div class="rooftop-tag">&#127751; Rooftop finish party included</div>
+      </div>
+
+      <div class="challenge-card reveal reveal-delay-5">
+        <div class="challenge-distance">&#127751;<small>Level 16</small></div>
+        <h3 class="challenge-name">Rooftop Party</h3>
+        <p class="challenge-desc">Cheer the runners home at the Level 16 rooftop finish. Pizza, drinks, sunset views over London.</p>
+        <ul class="challenge-includes">
+          <li>Rooftop venue access from 17:00</li>
+          <li>Pizza & welcome drink</li>
+          <li>Sunset over London skyline</li>
+        </ul>
+        <div class="challenge-price">£40 <span>/ entry</span></div>
+        <a href="#" class="challenge-btn">Book Now</a>
+      </div>
+
+      <div class="challenge-card donate-card reveal reveal-delay-5">
+        <div class="challenge-distance">&#x2764;&#xFE0F;<small>Support</small></div>
+        <h3 class="challenge-name">Donate</h3>
+        <p class="challenge-desc">Can't make it on the day? Support the cause from anywhere. 100% of your donation goes directly to <a href="https://www.transcendsarcoma.com/" target="_blank" style="color:var(--active-ember); text-decoration:underline;">Transcend Sarcoma</a>.</p>
+        <ul class="challenge-includes">
+          <li>Support the runners & the cause</li>
+          <li>Donate any amount</li>
+          <li>Receive a digital thank-you</li>
+        </ul>
+        <div class="challenge-price">From £10 <span>/ any amount</span></div>
+        <a href="#" class="challenge-btn">Donate Now</a>
+      </div>
+
+    </div>
+
+    <!-- WHATSAPP STAY UPDATED -->
+    <div class="whatsapp-banner reveal">
+      <div class="whatsapp-banner-text">
+        <span>&#128172;</span>
+        <p>Stay Updated<small>Join the WhatsApp group for route updates, training tips, and event news.</small></p>
+      </div>
+      <a href="https://chat.whatsapp.com/LtdHDTwfs33G8bcVVOy3UJ" target="_blank" class="btn-whatsapp">Join WhatsApp Group &#8594;</a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ ROUTE ═══════════════ -->
+<section class="section route" id="route">
+  <div class="container">
+    <div class="reveal">
+      <p class="section-label">Wapping → Byfleet → Wapping · 84km</p>
+      <h2 class="section-title">The Route</h2>
+    </div>
+    <!-- INTERACTIVE MAP -->
+    <div class="map-wrapper reveal">
+      <div class="map-segments-tabs">
+        <div class="map-seg-tab active" data-segment="all">Full Route <span class="tab-km">84km</span></div>
+        <div class="map-seg-tab" data-segment="1">Seg 1: Wapping → Sheen Gate <span class="tab-km">21km</span></div>
+        <div class="map-seg-tab" data-segment="2">Seg 2: Sheen Gate → Byfleet <span class="tab-km">21km</span></div>
+        <div class="map-seg-tab" data-segment="murph">✕ Murph Workout</div>
+        <div class="map-seg-tab" data-segment="3">Seg 3: Byfleet → Sheen Gate <span class="tab-km">21km</span></div>
+        <div class="map-seg-tab" data-segment="4">Seg 4: Sheen Gate → Wapping <span class="tab-km">21km</span></div>
+      </div>
+      <div id="routeMap"></div>
+      <div class="map-legend">
+        <div class="map-legend-item">
+          <div class="map-legend-line" style="background:var(--active-ember)"></div>
+          Outbound
+        </div>
+        <div class="map-legend-item">
+          <div class="map-legend-line" style="background:var(--cool-surge)"></div>
+          Return
+        </div>
+        <div class="map-legend-item">
+          <div class="map-legend-dot" style="background:var(--active-ember)"></div>
+          Start / Finish
+        </div>
+        <div class="map-legend-item">
+          <div class="map-legend-dot" style="background:var(--glacie-frost)"></div>
+          Checkpoint
+        </div>
+        <div class="map-legend-item">
+          <div class="map-legend-dot" style="background:#ff4444"></div>
+          Murph Workout
+        </div>
+      </div>
+    </div>
+
+    <div class="route-visual">
+      <div class="route-segments">
+
+        <div class="route-segment reveal">
+          <div class="route-km">21<small>km</small></div>
+          <div class="route-line"><div class="route-dot"></div></div>
+          <div class="route-info">
+            <h3>Segment 1 — Wapping → Sheen Gate, Richmond Park</h3>
+            <p>Depart Yellow Park, Tobacco Dock at 06:00. Run through East London, crossing Tower Bridge and heading south-west along the Thames path to Sheen Gate.</p>
+            <span class="route-tag">Half Marathon</span>
+          </div>
+        </div>
+
+        <div class="route-segment reveal">
+          <div class="route-km">21<small>km</small></div>
+          <div class="route-line"><div class="route-dot"></div></div>
+          <div class="route-info">
+            <h3>Segment 2 — Sheen Gate → Byfleet</h3>
+            <p>Through Richmond Park and into the Surrey countryside via Kingston. Scenic roads lead to Newwave CrossFit on Redhill Road, Byfleet.</p>
+            <span class="route-tag">Half Marathon</span>
+          </div>
+        </div>
+
+        <div class="route-segment murph reveal">
+          <div class="route-km">✕<small>Murph</small></div>
+          <div class="route-line"><div class="route-dot"></div></div>
+          <div class="route-info">
+            <h3>The Murph — Newwave CrossFit, Byfleet</h3>
+            <p>1 mile run · 100 pull-ups · 200 press-ups · 300 air squats · 1 mile run. Complete with the Newwave community around midday.</p>
+            <span class="route-tag">Workout</span>
+          </div>
+        </div>
+
+        <div class="route-segment reveal">
+          <div class="route-km">21<small>km</small></div>
+          <div class="route-line"><div class="route-dot"></div></div>
+          <div class="route-info">
+            <h3>Segment 3 — Byfleet → Sheen Gate</h3>
+            <p>Retrace the route back through Surrey. Afternoon light, tired legs, strong mind.</p>
+            <span class="route-tag">Half Marathon</span>
+          </div>
+        </div>
+
+        <div class="route-segment reveal">
+          <div class="route-km">21<small>km</small></div>
+          <div class="route-line"><div class="route-dot"></div></div>
+          <div class="route-info">
+            <h3>Segment 4 — Sheen Gate → Wapping</h3>
+            <p>The final push back to Yellow Park. Finish on the rooftop to pizza, drinks and a sunset you've earned.</p>
+            <span class="route-tag">Half Marathon — Finish</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ EXPERIENCE ═══════════════ -->
+<section class="section experience" id="experience">
+  <div class="container">
+    <div class="reveal">
+      <p class="section-label">More Than a Race</p>
+      <h2 class="section-title">The Experience</h2>
+    </div>
+    <div class="experience-grid">
+
+      <div class="exp-card reveal reveal-delay-1">
+        <div class="exp-card-bg run"></div>
+        <div class="exp-card-content">
+          <p class="exp-card-num">01 — The Run</p>
+          <h3 class="exp-card-title">84km Through London & Surrey</h3>
+          <p class="exp-card-desc">From the Wapping rooftop through the heart of London and into the Surrey countryside. Four half-marathon segments that test body and mind.</p>
+        </div>
+      </div>
+
+      <div class="exp-card reveal reveal-delay-2">
+        <div class="exp-card-bg murph"></div>
+        <div class="exp-card-content">
+          <p class="exp-card-num">02 — The Murph</p>
+          <h3 class="exp-card-title">The Workout That Defines You</h3>
+          <p class="exp-card-desc">At the halfway point, complete the legendary Murph workout with the Newwave CrossFit community. 1 mile, 100 pull-ups, 200 press-ups, 300 squats, 1 mile.</p>
+        </div>
+      </div>
+
+      <div class="exp-card reveal reveal-delay-3">
+        <div class="exp-card-bg rooftop"></div>
+        <div class="exp-card-content">
+          <p class="exp-card-num">03 — The Finish</p>
+          <h3 class="exp-card-title">Rooftop Sunset at Level 16</h3>
+          <p class="exp-card-desc">Cross the line on a Wapping rooftop as the sun sets over London. Pizza, cold drinks, and the knowledge you did something extraordinary.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ SCHEDULE ═══════════════ -->
+<section class="section schedule" id="schedule">
+  <div class="container">
+    <div class="reveal">
+      <p class="section-label">22 August 2026</p>
+      <h2 class="section-title">Event Schedule</h2>
+    </div>
+    <div class="timeline">
+      <div class="timeline-item reveal">
+        <div class="timeline-time">06:00</div>
+        <div class="timeline-title">Start from Level 16</div>
+        <div class="timeline-desc">Runners depart from Yellow Park, Tobacco Dock, Wapping Lane. Briefing and send-off.</div>
+      </div>
+      <div class="timeline-item reveal">
+        <div class="timeline-time">~09:30</div>
+        <div class="timeline-title">Sheen Gate, Richmond Park Checkpoint</div>
+        <div class="timeline-desc">Hydration and nutrition station. Segment 2 runners join here.</div>
+      </div>
+      <div class="timeline-item reveal">
+        <div class="timeline-time">~12:00</div>
+        <div class="timeline-title">Arrival at Newwave CrossFit, Byfleet</div>
+        <div class="timeline-desc">Murph workout with the gym community. Refuel and recover before the return.</div>
+      </div>
+      <div class="timeline-item reveal">
+        <div class="timeline-time">~13:30</div>
+        <div class="timeline-title">Return Run Begins</div>
+        <div class="timeline-desc">Segments 3 and 4 begin the journey back through Surrey and London.</div>
+      </div>
+      <div class="timeline-item reveal">
+        <div class="timeline-time">18:00</div>
+        <div class="timeline-title">Rooftop Finish Party</div>
+        <div class="timeline-desc">Level 16 rooftop opens. Pizza, drinks, sunset views, and celebrations as runners finish.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ VENUE ═══════════════ -->
+<section class="section venue" id="venue">
+  <div class="venue-bg-x">✕</div>
+  <div class="container">
+    <div class="venue-content">
+      <div class="venue-visual reveal">
+        <div class="venue-visual-inner">
+          <div class="venue-visual-text">Level<br>Sixteen</div>
+          <div class="venue-visual-sub">Yellow Park · Wapping · London</div>
+        </div>
+      </div>
+      <div class="venue-text reveal">
+        <p class="section-label">The Venue</p>
+        <h2 class="section-title">Level 16</h2>
+        <p>Perched above Wapping with panoramic views across the London skyline, Level 16 is the start and finish line for the Murph Marathon. An industrial rooftop space with a raw, urban edge — the perfect backdrop for an endurance event that pushes boundaries.</p>
+        <p>The venue hosts the morning send-off and the evening celebration. Expect pizza, cold drinks, and a sunset you'll remember.</p>
+        <div class="venue-features">
+          <div class="venue-feature">
+            <strong>Rooftop Views</strong>
+            <span>360° London skyline</span>
+          </div>
+          <div class="venue-feature">
+            <strong>Location</strong>
+            <span>Yellow Park, Wapping</span>
+          </div>
+          <div class="venue-feature">
+            <strong>Finish Party</strong>
+            <span>Pizza, drinks & sunset</span>
+          </div>
+          <div class="venue-feature">
+            <strong>Capacity</strong>
+            <span>Exclusive event access</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ MERCH ═══════════════ -->
+<section class="section merch" id="merch">
+  <div class="container">
+    <div class="reveal">
+      <p class="section-label">Limited Edition</p>
+      <h2 class="section-title">Merchandise</h2>
+    </div>
+    <div class="merch-grid">
+
+      <div class="merch-card reveal reveal-delay-1">
+        <div class="merch-img">
+          <div class="merch-img-icon">✕</div>
+          <span class="merch-badge">Pre-Order</span>
+        </div>
+        <div class="merch-info">
+          <h4>Event Tee</h4>
+          <p>Murph Marathon 2026 graphic tee</p>
+          <div class="merch-price">£44</div>
+        </div>
+      </div>
+
+      <div class="merch-card reveal reveal-delay-2">
+        <div class="merch-img">
+          <div class="merch-img-icon">✕</div>
+          <span class="merch-badge">Pre-Order</span>
+        </div>
+        <div class="merch-info">
+          <h4>Training Hoodie</h4>
+          <p>Level Sixteen heavyweight hoodie</p>
+          <div class="merch-price">£81</div>
+        </div>
+      </div>
+
+      <div class="merch-card reveal reveal-delay-3">
+        <div class="merch-img">
+          <div class="merch-img-icon">✕</div>
+          <span class="merch-badge">Limited</span>
+        </div>
+        <div class="merch-info">
+          <h4>Runner's Cap</h4>
+          <p>Performance cap in Active Ember</p>
+          <div class="merch-price">£35</div>
+        </div>
+      </div>
+
+      <div class="merch-card reveal reveal-delay-4">
+        <div class="merch-img">
+          <div class="merch-img-icon">✕</div>
+          <span class="merch-badge">Drop</span>
+        </div>
+        <div class="merch-info">
+          <h4>Finisher Pack</h4>
+          <p>Tee + Medal + Patch bundle</p>
+          <div class="merch-price">£63</div>
+        </div>
+      </div>
+
+    </div>
+    <div style="text-align:center; margin-top:40px;" class="reveal">
+      <a href="#" class="btn-secondary">View Full Store →</a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ PARTNERS ═══════════════ -->
+<section class="section partners" id="partners">
+  <div class="container">
+    <div class="reveal">
+      <p class="section-label">Supported By</p>
+      <h2 class="section-title">Partners & Sponsors</h2>
+    </div>
+    <div class="partner-logos reveal">
+      <a href="https://www.passentry.com" target="_blank" class="partner-logo" title="PassEntry">
+        <svg width="160" height="44" viewBox="0 0 735 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9.85363 159.657L6.63546 160.894C4.84185 161.536 3.25843 162.739 2.07965 164.355C0.900911 165.97 0.17809 167.928 0 169.988V170.715C0.00317069 172.655 0.484215 174.558 1.39234 176.222C2.30041 177.888 3.60185 179.252 5.15908 180.173L49.5502 199.162C57.463 202.545 65.7905 195.524 65.7905 185.521V138.103L9.85363 159.657Z" fill="url(#pe0)"/>
+          <path d="M45.3196 3.83679L6.26994 18.8786C5.10198 19.4683 4.05152 20.3045 3.17843 21.3394C2.30539 22.3743 1.62683 23.5877 1.18164 24.9103C0.736406 26.2329 0.533235 27.6386 0.583719 29.0473C0.634203 30.456 0.937323 31.84 1.4758 33.1202C2.4504 35.4436 4.15088 37.308 6.26994 38.3766L57.8605 60.4393C60.2812 61.5799 62.337 63.4846 63.7668 65.9105C65.1965 68.3363 65.9358 71.174 65.8897 74.0622V138.086L86.0781 130.319C98.0264 125.719 108.376 117.163 115.699 105.834C123.021 94.5052 126.953 80.9628 126.952 67.0781C126.939 58.2556 125.341 49.5224 122.249 41.3773C119.157 33.2321 114.633 25.8346 108.933 19.6072C103.233 13.3798 96.4705 8.44451 89.0309 5.0832C81.5913 1.72191 73.6206 0.00047636 65.5742 0.0172107C58.6754 0.0383502 51.8287 1.3295 45.3196 3.83679Z" fill="url(#pe1)"/>
+          <path d="M190.293 131.25V43.75H226.293C231.793 43.75 236.626 44.875 240.793 47.125C245.043 49.2917 248.335 52.375 250.668 56.375C253.085 60.375 254.293 65.125 254.293 70.625V72.375C254.293 77.7917 253.043 82.5417 250.543 86.625C248.126 90.625 244.793 93.75 240.543 96C236.376 98.1667 231.626 99.25 226.293 99.25H206.793V131.25H190.293ZM206.793 84.25H224.668C228.585 84.25 231.751 83.1667 234.168 81C236.585 78.8333 237.793 75.875 237.793 72.125V70.875C237.793 67.125 236.585 64.1667 234.168 62C231.751 59.8333 228.585 58.75 224.668 58.75H206.793V84.25Z" fill="#F4F3EA"/>
+          <path d="M279.383 133C274.966 133 271.008 132.25 267.508 130.75C264.008 129.167 261.216 126.917 259.133 124C257.133 121 256.133 117.375 256.133 113.125C256.133 108.875 257.133 105.333 259.133 102.5C261.216 99.5833 264.049 97.4167 267.633 96C271.299 94.5 275.466 93.75 280.133 93.75H297.133V90.25C297.133 87.3333 296.216 84.9583 294.383 83.125C292.549 81.2083 289.633 80.25 285.633 80.25C281.716 80.25 278.799 81.1667 276.883 83C274.966 84.75 273.716 87.0417 273.133 89.875L258.633 85C259.633 81.8333 261.216 78.9583 263.383 76.375C265.633 73.7083 268.591 71.5833 272.258 70C276.008 68.3333 280.549 67.5 285.883 67.5C294.049 67.5 300.508 69.5417 305.258 73.625C310.008 77.7083 312.383 83.625 312.383 91.375V114.5C312.383 117 313.549 118.25 315.883 118.25H320.883V131.25H310.383C307.299 131.25 304.758 130.5 302.758 129C300.758 127.5 299.758 125.5 299.758 123V122.875H297.383C297.049 123.875 296.299 125.208 295.133 126.875C293.966 128.458 292.133 129.875 289.633 131.125C287.133 132.375 283.716 133 279.383 133ZM282.133 120.25C286.549 120.25 290.133 119.042 292.883 116.625C295.716 114.125 297.133 110.833 297.133 106.75V105.5H281.258C278.341 105.5 276.049 106.125 274.383 107.375C272.716 108.625 271.883 110.375 271.883 112.625C271.883 114.875 272.758 116.708 274.508 118.125C276.258 119.542 278.799 120.25 282.133 120.25Z" fill="#F4F3EA"/>
+          <path d="M352.668 133C344.585 133 337.96 131.25 332.793 127.75C327.626 124.25 324.501 119.25 323.418 112.75L337.918 109C338.501 111.917 339.46 114.208 340.793 115.875C342.21 117.542 343.918 118.75 345.918 119.5C348.001 120.167 350.251 120.5 352.668 120.5C356.335 120.5 359.043 119.875 360.793 118.625C362.543 117.292 363.418 115.667 363.418 113.75C363.418 111.833 362.585 110.375 360.918 109.375C359.251 108.292 356.585 107.417 352.918 106.75L349.418 106.125C345.085 105.292 341.126 104.167 337.543 102.75C333.96 101.25 331.085 99.2083 328.918 96.625C326.751 94.0417 325.668 90.7083 325.668 86.625C325.668 80.4583 327.918 75.75 332.418 72.5C336.918 69.1667 342.835 67.5 350.168 67.5C357.085 67.5 362.835 69.0417 367.418 72.125C372.001 75.2083 375.001 79.25 376.418 84.25L361.793 88.75C361.126 85.5833 359.751 83.3333 357.668 82C355.668 80.6667 353.168 80 350.168 80C347.168 80 344.876 80.5417 343.293 81.625C341.71 82.625 340.918 84.0417 340.918 85.875C340.918 87.875 341.751 89.375 343.418 90.375C345.085 91.2917 347.335 92 350.168 92.5L353.668 93.125C358.335 93.9583 362.543 95.0833 366.293 96.5C370.126 97.8333 373.126 99.7917 375.293 102.375C377.543 104.875 378.668 108.292 378.668 112.625C378.668 119.125 376.293 124.167 371.543 127.75C366.876 131.25 360.585 133 352.668 133Z" fill="#F4F3EA"/>
+          <path d="M413.215 133C405.132 133 398.507 131.25 393.34 127.75C388.173 124.25 385.048 119.25 383.965 112.75L398.465 109C399.048 111.917 400.007 114.208 401.34 115.875C402.757 117.542 404.465 118.75 406.465 119.5C408.548 120.167 410.798 120.5 413.215 120.5C416.882 120.5 419.59 119.875 421.34 118.625C423.09 117.292 423.965 115.667 423.965 113.75C423.965 111.833 423.132 110.375 421.465 109.375C419.798 108.292 417.132 107.417 413.465 106.75L409.965 106.125C405.632 105.292 401.673 104.167 398.09 102.75C394.507 101.25 391.632 99.2083 389.465 96.625C387.298 94.0417 386.215 90.7083 386.215 86.625C386.215 80.4583 388.465 75.75 392.965 72.5C397.465 69.1667 403.382 67.5 410.715 67.5C417.632 67.5 423.382 69.0417 427.965 72.125C432.548 75.2083 435.548 79.25 436.965 84.25L422.34 88.75C421.673 85.5833 420.298 83.3333 418.215 82C416.215 80.6667 413.715 80 410.715 80C407.715 80 405.423 80.5417 403.84 81.625C402.257 82.625 401.465 84.0417 401.465 85.875C401.465 87.875 402.298 89.375 403.965 90.375C405.632 91.2917 407.882 92 410.715 92.5L414.215 93.125C418.882 93.9583 423.09 95.0833 426.84 96.5C430.673 97.8333 433.673 99.7917 435.84 102.375C438.09 104.875 439.215 108.292 439.215 112.625C439.215 119.125 436.84 124.167 432.09 127.75C427.423 131.25 421.132 133 413.215 133Z" fill="#F4F3EA"/>
+          <path d="M447.52 131.25V43.75H503.77V58.75H464.02V79.625H500.27V94.625H464.02V116.25H504.52V131.25H447.52Z" fill="#F4F3EA"/>
+          <path d="M512.227 131.25V69.2495H527.727V77.3745H529.977C530.977 75.2078 532.852 73.1662 535.602 71.2495C538.352 69.2495 542.518 68.2495 548.102 68.2495C552.935 68.2495 557.143 69.3745 560.727 71.6245C564.393 73.7912 567.227 76.8328 569.227 80.7495C571.227 84.5828 572.227 89.0829 572.227 94.2495V131.25H556.477V95.4995C556.477 90.8329 555.31 87.3328 552.977 84.9995C550.727 82.6662 547.477 81.4995 543.227 81.4995C538.393 81.4995 534.643 83.1245 531.977 86.3745C529.31 89.5412 527.977 93.9995 527.977 99.7495V131.25H512.227Z" fill="#F4F3EA"/>
+          <path d="M603.791 131.25C599.708 131.25 596.374 130 593.791 127.5C591.291 124.917 590.041 121.5 590.041 117.25V82.25H574.541V69.25H590.041V50H605.791V69.25H622.791V82.25H605.791V114.5C605.791 117 606.958 118.25 609.291 118.25H621.291V131.25H603.791Z" fill="#F4F3EA"/>
+          <path d="M629.551 131.25V69.2502H645.051V76.2502H647.301C648.217 73.7502 649.717 71.9169 651.801 70.7502C653.967 69.5836 656.467 69.0002 659.301 69.0002H666.801V83.0002H659.051C655.051 83.0002 651.759 84.0836 649.176 86.2502C646.592 88.3336 645.301 91.5836 645.301 96.0002V131.25H629.551Z" fill="#F4F3EA"/>
+          <path d="M678.363 156.25V142.5H712.113C714.447 142.5 715.613 141.25 715.613 138.75V123.125H713.363C712.697 124.542 711.655 125.959 710.238 127.375C708.822 128.792 706.905 129.959 704.488 130.875C702.072 131.792 698.988 132.25 695.238 132.25C690.405 132.25 686.155 131.167 682.488 129C678.905 126.75 676.113 123.667 674.113 119.75C672.113 115.834 671.113 111.334 671.113 106.25V69.2505H686.863V105C686.863 109.667 687.988 113.167 690.238 115.5C692.572 117.834 695.863 119 700.113 119C704.947 119 708.697 117.417 711.363 114.25C714.03 111 715.363 106.5 715.363 100.75V69.2505H731.113V142.25C731.113 146.5 729.863 149.875 727.363 152.375C724.863 154.959 721.53 156.25 717.363 156.25H678.363Z" fill="#F4F3EA"/>
+          <defs>
+            <linearGradient id="pe0" x1="27.6864" y1="142.614" x2="46.8404" y2="181.546" gradientUnits="userSpaceOnUse"><stop stop-color="#FFA399"/><stop offset="1" stop-color="#FF6C5C"/></linearGradient>
+            <linearGradient id="pe1" x1="88.828" y1="0.0170882" x2="59.3397" y2="137.134" gradientUnits="userSpaceOnUse"><stop stop-color="#FF6C5C"/><stop offset="1" stop-color="#FF4733"/></linearGradient>
+          </defs>
+        </svg>
+      </a>
+      <a href="https://www.inputperformanceai.com/murph" target="_blank" class="partner-logo" title="IPAI">
+        <svg width="120" height="50" viewBox="0 0 240 100" xmlns="http://www.w3.org/2000/svg">
+          <rect x="4" y="4" width="232" height="92" rx="16" ry="16" fill="white" stroke="#25D366" stroke-width="8"/>
+          <text x="120" y="68" font-family="'Arial Black', 'Helvetica Neue', Arial, sans-serif" font-size="52" font-weight="900" fill="#111" text-anchor="middle" letter-spacing="4">IPAI</text>
+        </svg>
+      </a>
+      <a href="https://www.yellowpark.co.uk" target="_blank" class="partner-logo" title="Level Sixteen">
+        <svg width="120" height="50" viewBox="0 0 240 100" xmlns="http://www.w3.org/2000/svg">
+          <text x="120" y="48" font-family="'Oswald', sans-serif" font-size="28" font-weight="700" fill="#F4F3EA" text-anchor="middle" letter-spacing="3" text-transform="uppercase">LEVEL</text>
+          <text x="120" y="80" font-family="'Oswald', sans-serif" font-size="28" font-weight="700" text-anchor="middle" letter-spacing="3"><tspan fill="#E67A45">SIX</tspan><tspan fill="#F4F3EA">TEEN</tspan></text>
+        </svg>
+      </a>
+      <a href="#" class="partner-logo" title="Newwave CrossFit" style="font-family:var(--font-display); font-size:0.85rem; letter-spacing:2px; text-transform:uppercase; color:var(--shadow-light);">Newwave</a>
+    </div>
+    <p style="margin-top:40px; font-size:.85rem; opacity:.35;" class="reveal">Interested in partnering with Murph Marathon? <a href="#" style="color:var(--active-ember); text-decoration:underline;">Get in touch →</a></p>
+  </div>
+</section>
+
+<!-- ═══════════════ FAQ ═══════════════ -->
+<section class="section faq" id="faq">
+  <div class="container">
+    <div class="reveal">
+      <p class="section-label">Got Questions?</p>
+      <h2 class="section-title">FAQ</h2>
+    </div>
+    <div class="faq-list">
+
+      <div class="faq-item reveal">
+        <div class="faq-question" onclick="this.parentElement.classList.toggle('open')">
+          <h3>Where does the money go?</h3>
+          <span class="faq-toggle">+</span>
+        </div>
+        <div class="faq-answer">
+          <p>100% of proceeds from ticket sales and donations go directly to <a href="https://www.transcendsarcoma.com/" target="_blank" style="color:var(--active-ember); text-decoration:underline;">Transcend Sarcoma</a>, a charity dedicated to raising awareness and funding research into sarcoma. This is a community-driven event — every entry, every donation, every penny makes a difference.</p>
+        </div>
+      </div>
+
+      <div class="faq-item reveal">
+        <div class="faq-question" onclick="this.parentElement.classList.toggle('open')">
+          <h3>Is the rooftop party included with my ticket?</h3>
+          <span class="faq-toggle">+</span>
+        </div>
+        <div class="faq-answer">
+          <p>Yes. The Level 16 rooftop finish party is included with every ticket — Full Challenge, Marathon + Murph, Half Marathon, and Murph Only. You can also buy a standalone rooftop party ticket if you just want to come and celebrate.</p>
+        </div>
+      </div>
+
+      <div class="faq-item reveal">
+        <div class="faq-question" onclick="this.parentElement.classList.toggle('open')">
+          <h3>Do I need to run the full 84km?</h3>
+          <span class="faq-toggle">+</span>
+        </div>
+        <div class="faq-answer">
+          <p>No. Choose your level — a half marathon (21km), the full marathon + Murph (42km), the Murph workout only, or even just the rooftop party. There's also a donate option if you can't make it but want to support the cause.</p>
+        </div>
+      </div>
+
+      <div class="faq-item reveal">
+        <div class="faq-question" onclick="this.parentElement.classList.toggle('open')">
+          <h3>What is the Murph workout?</h3>
+          <span class="faq-toggle">+</span>
+        </div>
+        <div class="faq-answer">
+          <p>The Murph is a legendary CrossFit Hero workout: 1 mile run, 100 pull-ups, 200 press-ups, 300 air squats, then another 1 mile run. It's performed at Newwave CrossFit Byfleet with their community. All fitness levels welcome — scale as needed.</p>
+        </div>
+      </div>
+
+      <div class="faq-item reveal">
+        <div class="faq-question" onclick="this.parentElement.classList.toggle('open')">
+          <h3>Where does the event start and finish?</h3>
+          <span class="faq-toggle">+</span>
+        </div>
+        <div class="faq-answer">
+          <p>Both start and finish are at Level 16, Yellow Park in Wapping, London. The turnaround point is Newwave CrossFit on Redhill Road, Byfleet, Surrey.</p>
+        </div>
+      </div>
+
+      <div class="faq-item reveal">
+        <div class="faq-question" onclick="this.parentElement.classList.toggle('open')">
+          <h3>Will there be hydration and support on the route?</h3>
+          <span class="faq-toggle">+</span>
+        </div>
+        <div class="faq-answer">
+          <p>Yes. Checkpoints with hydration and nutrition will be positioned along the route, including at Sheen Gate (Richmond Park) and Newwave CrossFit Byfleet. Full details will be shared closer to the event.</p>
+        </div>
+      </div>
+
+      <div class="faq-item reveal">
+        <div class="faq-question" onclick="this.parentElement.classList.toggle('open')">
+          <h3>Can I combine segments or add merchandise to my ticket?</h3>
+          <span class="faq-toggle">+</span>
+        </div>
+        <div class="faq-answer">
+          <p>Yes. During checkout you can select multiple segments and add merchandise to your booking. You can also purchase merch separately from the online store.</p>
+        </div>
+      </div>
+
+      <div class="faq-item reveal">
+        <div class="faq-question" onclick="this.parentElement.classList.toggle('open')">
+          <h3>What's included in the rooftop party?</h3>
+          <span class="faq-toggle">+</span>
+        </div>
+        <div class="faq-answer">
+          <p>The rooftop finish party at Level 16 includes access from 17:00, pizza, a welcome drink, and sunset views over the London skyline. Additional drinks available at the bar.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ FINAL CTA ═══════════════ -->
+<section class="final-cta">
+  <div class="container">
+    <div class="reveal">
+      <p class="section-label">22 August 2026</p>
+      <h2 class="section-title">See You<br>At The Top.</h2>
+      <p>From Wapping to Byfleet and back. Run it. Murph it. Finish on the rooftop.<br><strong>100% of proceeds go to <a href="https://www.transcendsarcoma.com/" target="_blank" style="color:var(--active-ember);">Transcend Sarcoma</a>.</strong></p>
+      <a href="#challenges" class="btn-primary">Get Your Ticket →</a>
+      <div style="margin-top:16px;"><a href="https://chat.whatsapp.com/LtdHDTwfs33G8bcVVOy3UJ" target="_blank" class="btn-secondary" style="border-color:rgba(244,243,234,.5);">Join WhatsApp for Updates →</a></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ FOOTER ═══════════════ -->
+<footer>
+  <div class="container">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <div class="nav-logo">Level <span style="color:var(--active-ember)">Six</span>teen</div>
+        <p>An endurance event by Level Sixteen. Wapping, London. Run further. Push harder. Finish on the rooftop.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Event</h4>
+        <a href="#challenges">Challenge Options</a>
+        <a href="#route">Route Map</a>
+        <a href="#schedule">Schedule</a>
+        <a href="#faq">FAQ</a>
+      </div>
+      <div class="footer-col">
+        <h4>Venue</h4>
+        <a href="#venue">Level 16</a>
+        <a href="#">Yellow Park, Wapping</a>
+        <a href="#">Private Hire</a>
+      </div>
+      <div class="footer-col">
+        <h4>Connect</h4>
+        <a href="#">Instagram</a>
+        <a href="#">Strava Club</a>
+        <a href="#">Contact</a>
+        <a href="#">Newsletter</a>
+        <a href="https://chat.whatsapp.com/LtdHDTwfs33G8bcVVOy3UJ" target="_blank">WhatsApp Group</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 Level Sixteen / Murph Marathon. All rights reserved.</p>
+      <div class="footer-socials">
+        <a href="#" title="Instagram">IG</a>
+        <a href="#" title="Strava">S</a>
+        <a href="#" title="Email">@</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- ═══════════════ SCRIPTS ═══════════════ -->
+<script>
+// Navbar scroll effect
+const nav = document.getElementById('navbar');
+window.addEventListener('scroll', () => {
+  nav.classList.toggle('scrolled', window.scrollY > 60);
+});
+
+// Scroll reveal
+const reveals = document.querySelectorAll('.reveal');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+reveals.forEach(el => observer.observe(el));
+
+// Close mobile nav on link click
+document.querySelectorAll('.nav-links a').forEach(link => {
+  link.addEventListener('click', () => {
+    document.getElementById('navLinks').classList.remove('open');
+  });
+});
+
+// ═══════════════ INTERACTIVE ROUTE MAP ═══════════════
+(function() {
+  // Key locations
+  const locations = {
+    wapping:    [51.5082, -0.0575],   // Yellow Park, Tobacco Dock, Wapping Lane
+    towerBridge:[51.5055, -0.0754],
+    bermondsey: [51.4975, -0.0820],
+    battersea:  [51.4812, -0.1505],
+    wandsworth: [51.4571, -0.1917],
+    putney:     [51.4610, -0.2135],
+    sheenGate:  [51.4425, -0.2658],   // Sheen Gate, Richmond Park
+    richmond:   [51.4350, -0.2850],
+    kingston:   [51.4103, -0.3066],
+    weybridge:  [51.3700, -0.3580],
+    byfleet:    [51.3480, -0.3870]    // Newwave CrossFit, Redhill Road, Byfleet
+  };
+
+  // Route waypoints — outbound (Wapping → Sheen Gate → Byfleet)
+  const seg1Points = [
+    locations.wapping,
+    [51.5060, -0.0620],
+    locations.towerBridge,
+    [51.5020, -0.0800],
+    locations.bermondsey,
+    [51.4920, -0.1100],
+    [51.4880, -0.1300],
+    locations.battersea,
+    [51.4700, -0.1700],
+    locations.wandsworth,
+    locations.putney,
+    [51.4530, -0.2300],
+    [51.4480, -0.2500],
+    locations.sheenGate
+  ];
+
+  const seg2Points = [
+    locations.sheenGate,
+    locations.richmond,
+    [51.4280, -0.2920],
+    locations.kingston,
+    [51.3950, -0.3200],
+    [51.3830, -0.3380],
+    locations.weybridge,
+    [51.3580, -0.3720],
+    locations.byfleet
+  ];
+
+  // Return is same route reversed
+  const seg3Points = [...seg2Points].reverse();
+  const seg4Points = [...seg1Points].reverse();
+
+  // Colours
+  const emberColor = '#E67A45';
+  const surgeColor = '#3E7B80';
+  const frostColor = '#A3C7C4';
+  const murphColor = '#ff4444';
+
+  // Init map
+  const map = L.map('routeMap', {
+    center: [51.42, -0.22],
+    zoom: 11,
+    zoomControl: true,
+    scrollWheelZoom: false,
+    attributionControl: true
+  });
+
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+    attribution: '&copy; <a href="https://carto.com/">CARTO</a> &copy; <a href="https://www.openstreetmap.org/copyright">OSM</a>',
+    subdomains: 'abcd',
+    maxZoom: 19
+  }).addTo(map);
+
+  // Custom marker icons
+  function createIcon(color, size, label) {
+    return L.divIcon({
+      className: 'custom-marker',
+      html: '<div style="width:'+size+'px;height:'+size+'px;background:'+color+';border-radius:50%;border:3px solid #101820;box-shadow:0 0 0 2px '+color+',0 4px 15px rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;font-family:Oswald,sans-serif;font-size:'+(size*0.35)+'px;font-weight:700;color:#F4F3EA;letter-spacing:1px;">'+( label || '' )+'</div>',
+      iconSize: [size, size],
+      iconAnchor: [size/2, size/2],
+      popupAnchor: [0, -size/2 - 4]
+    });
+  }
+
+  // Draw route polylines
+  const seg1Line = L.polyline(seg1Points, { color: emberColor, weight: 4, opacity: 0.9, dashArray: null, lineCap: 'round', lineJoin: 'round' }).addTo(map);
+  const seg2Line = L.polyline(seg2Points, { color: emberColor, weight: 4, opacity: 0.6, dashArray: '8 6', lineCap: 'round' }).addTo(map);
+  const seg3Line = L.polyline(seg3Points, { color: surgeColor, weight: 4, opacity: 0.6, dashArray: '8 6', lineCap: 'round' }).addTo(map);
+  const seg4Line = L.polyline(seg4Points, { color: surgeColor, weight: 4, opacity: 0.9, lineCap: 'round', lineJoin: 'round' }).addTo(map);
+
+  // Glow effect — duplicate lines behind with blur
+  L.polyline(seg1Points, { color: emberColor, weight: 10, opacity: 0.15 }).addTo(map);
+  L.polyline(seg2Points, { color: emberColor, weight: 10, opacity: 0.1 }).addTo(map);
+  L.polyline(seg3Points, { color: surgeColor, weight: 10, opacity: 0.1 }).addTo(map);
+  L.polyline(seg4Points, { color: surgeColor, weight: 10, opacity: 0.15 }).addTo(map);
+
+  // Markers
+  const wappingMarker = L.marker(locations.wapping, { icon: createIcon(emberColor, 40, '✕') }).addTo(map)
+    .bindPopup('<div class="map-popup-title">Level 16 — Start / Finish</div><div class="map-popup-sub">Yellow Park, Tobacco Dock, Wapping Lane<br>06:00 departure · 18:00 rooftop finish</div><div class="map-popup-tag">Start & Finish</div>');
+
+  const sheenGateMarker = L.marker(locations.sheenGate, { icon: createIcon(frostColor, 30, '') }).addTo(map)
+    .bindPopup('<div class="map-popup-title">Sheen Gate — Richmond Park</div><div class="map-popup-sub">Checkpoint — hydration & nutrition station<br>Segments 1↔2 and 3↔4 transition</div><div class="map-popup-tag">Checkpoint · 21km / 63km</div>');
+
+  const byfleetMarker = L.marker(locations.byfleet, { icon: createIcon(murphColor, 36, 'M') }).addTo(map)
+    .bindPopup('<div class="map-popup-title">Newwave CrossFit — Murph</div><div class="map-popup-sub">Redhill Road, Byfleet, Surrey<br>1.6km · 100 pull-ups · 200 press-ups · 300 squats · 1.6km</div><div class="map-popup-tag">Murph Workout · 42km</div>');
+
+  // Intermediate markers
+  const tbMarker = L.marker(locations.towerBridge, { icon: createIcon('rgba(244,243,234,.4)', 14, '') }).addTo(map)
+    .bindPopup('<div class="map-popup-title">Tower Bridge</div><div class="map-popup-sub">Iconic crossing point heading south-west</div>');
+  const kingstonMarker = L.marker(locations.kingston, { icon: createIcon('rgba(244,243,234,.4)', 14, '') }).addTo(map)
+    .bindPopup('<div class="map-popup-title">Kingston</div><div class="map-popup-sub">Passing through towards Byfleet</div>');
+
+  const allLines = [seg1Line, seg2Line, seg3Line, seg4Line];
+  const allMarkers = [wappingMarker, sheenGateMarker, byfleetMarker, tbMarker, kingstonMarker];
+  const fullBounds = L.featureGroup([seg1Line, seg2Line]).getBounds();
+
+  // Segment tab switching
+  const tabs = document.querySelectorAll('.map-seg-tab');
+  tabs.forEach(tab => {
+    tab.addEventListener('click', function() {
+      tabs.forEach(t => t.classList.remove('active'));
+      this.classList.add('active');
+      const seg = this.dataset.segment;
+
+      // Reset visibility
+      allLines.forEach(l => { l.setStyle({ opacity: 0.15, weight: 2 }); });
+      allMarkers.forEach(m => { m.setOpacity(0.3); });
+
+      if (seg === 'all') {
+        seg1Line.setStyle({ opacity: 0.9, weight: 4 });
+        seg2Line.setStyle({ opacity: 0.6, weight: 4 });
+        seg3Line.setStyle({ opacity: 0.6, weight: 4 });
+        seg4Line.setStyle({ opacity: 0.9, weight: 4 });
+        allMarkers.forEach(m => m.setOpacity(1));
+        map.fitBounds(fullBounds, { padding: [40, 40] });
+      } else if (seg === '1') {
+        seg1Line.setStyle({ opacity: 1, weight: 5 });
+        wappingMarker.setOpacity(1); sheenGateMarker.setOpacity(1); tbMarker.setOpacity(1);
+        map.fitBounds(seg1Line.getBounds(), { padding: [50, 50] });
+      } else if (seg === '2') {
+        seg2Line.setStyle({ opacity: 1, weight: 5 });
+        sheenGateMarker.setOpacity(1); byfleetMarker.setOpacity(1); kingstonMarker.setOpacity(1);
+        map.fitBounds(seg2Line.getBounds(), { padding: [50, 50] });
+      } else if (seg === 'murph') {
+        byfleetMarker.setOpacity(1);
+        map.setView(locations.byfleet, 14);
+        byfleetMarker.openPopup();
+      } else if (seg === '3') {
+        seg3Line.setStyle({ opacity: 1, weight: 5 });
+        byfleetMarker.setOpacity(1); sheenGateMarker.setOpacity(1); kingstonMarker.setOpacity(1);
+        map.fitBounds(seg3Line.getBounds(), { padding: [50, 50] });
+      } else if (seg === '4') {
+        seg4Line.setStyle({ opacity: 1, weight: 5 });
+        sheenGateMarker.setOpacity(1); wappingMarker.setOpacity(1); tbMarker.setOpacity(1);
+        map.fitBounds(seg4Line.getBounds(), { padding: [50, 50] });
+      }
+    });
+  });
+
+  // Fit initial view
+  map.fitBounds(fullBounds, { padding: [40, 40] });
+})();
+</script>
+</body>
+</html>
